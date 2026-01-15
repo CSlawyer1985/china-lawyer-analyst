@@ -400,9 +400,6 @@ MIT License
 
 ## 致谢
 
-- 原版 `lawyer-analyst` skill 作者
-- 威科先行法律数据库
-- 北京大学法学院
 - 浙江海泰律师事务所
 
 ---
