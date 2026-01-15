@@ -1,0 +1,25 @@
+{
+  "name": "china-lawyer-analyst",
+  "description": "通过中国法律视角分析事件，运用成文法解释、指导案例参照、请求权基础分析等方法，理解权利义务、评估责任风险、识别法律依据并推荐合规策略。**MOE 架构 v2.0**：按需加载领域模块，降低 token 消耗 37%（单领域48%）。",
+  "version": "2.0.0",
+  "author": "陈石律师（浙江海泰律师事务所）",
+  "repo": "china-lawyer-analyst",
+  "category": "design",
+  "tags": [
+    "lawyer",
+    "analyst",
+    "china-law",
+    "民法典",
+    "民事诉讼",
+    "合同审查",
+    "侵权责任",
+    "司法解释",
+    "指导案例",
+    "MOE",
+    "智能路由",
+    "Token优化"
+  ],
+  "language": "zh-CN",
+  "jurisdiction": "PRC",
+  "stars": 0
+}
