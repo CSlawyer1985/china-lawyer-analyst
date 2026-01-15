@@ -1,0 +1,57 @@
+{
+  "version": "3.0.0",
+  "last_updated": "2026-01-16",
+  "interpretations": [
+    {
+      "id": "contract-general-2023",
+      "name": "民法典合同编通则司法解释（2023）",
+      "status": "active",
+      "priority": "⭐⭐⭐⭐⭐"
+    },
+    {
+      "id": "security-law-2020",
+      "name": "民法典担保制度解释（2020）",
+      "status": "active",
+      "priority": "⭐⭐⭐⭐⭐"
+    }
+  ],
+  "keywords_mapping": {
+    "合同编通则解释": "contract-general-2023",
+    "合同编通则司法解释": "contract-general-2023",
+    "预约合同": "contract-general-2023",
+    "越权代表": "contract-general-2023",
+    "违反强制性规定": "contract-general-2023",
+    "以物抵债": "contract-general-2023",
+    "担保制度解释": "security-law-2020",
+    "民法典担保制度解释": "security-law-2020",
+    "保证方式": "security-law-2020",
+    "价款优先权": "security-law-2020",
+    "PMSI": "security-law-2020",
+    "抵押财产转让": "security-law-2020"
+  },
+  "external_databases": {
+    "official": {
+      "国家法律法规数据库": "https://flk.npc.gov.cn",
+      "最高人民法院官网": "https://www.court.gov.cn",
+      "最高人民检察院官网": "https://www.spp.gov.cn",
+      "中国裁判文书网": "https://wenshu.court.gov.cn",
+      "人民法院案例库": "https://anli.court.gov.cn",
+      "12309中国检察网": "https://www.12309.gov.cn",
+      "中国执行信息公开网": "https://zxgk.court.gov.cn",
+      "国家行政法规库": "https://xzfg.moj.gov.cn"
+    },
+    "professional": {
+      "威科先行": "https://law.wkinfo.com.cn",
+      "北大法宝": "https://www.pkulaw.com",
+      "法信": "https://www.faxin.com",
+      "无讼案例": "https://www.itslaw.com"
+    },
+    "academic": {
+      "国家哲学社会科学学术期刊数据库": "https://nssd.cssn.cn",
+      "中国法院网法律文库": "https://www.chinacourt.org/law.shtml"
+    },
+    "regional": {
+      "法院审判规范性文件": "https://www.zwjkey.com/fayuanshenpanguifanxingwenjian/"
+    }
+  }
+}

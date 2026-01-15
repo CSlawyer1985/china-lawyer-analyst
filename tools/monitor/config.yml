@@ -1,0 +1,110 @@
+# 司法解释监测工具配置文件
+
+# 监测源配置
+sources:
+  supreme_court:
+    name: "最高人民法院官网"
+    url: "http://www.court.gov.cn"
+    list_url: "http://www.court.gov.cn/fabu-xiangqing.html"
+    enabled: true
+    priority: 1
+
+  npc_database:
+    name: "国家法律法规数据库"
+    url: "https://flk.npc.gov.cn"
+    enabled: true
+    priority: 2
+
+  court_library:
+    name: "人民法院案例库"
+    url: "https://anli.court.gov.cn"
+    enabled: false  # 暂不监测案例库
+    priority: 3
+
+# 监测配置
+monitor:
+  check_interval_days: 7  # 每7天检查一次（每周）
+  check_time: "09:00"     # 检查时间（上午9点）
+  lookback_days: 30       # 获取最近30天的内容
+  timeout: 30             # 请求超时（秒）
+
+# 队列配置
+queue:
+  file: "queue.json"
+  max_items: 100          # 队列最大项目数
+  notification_file: "NOTIFICATION.md"
+
+# 输出配置
+output:
+  log_file: "tools/monitor/monitor.log"
+  log_level: "INFO"       # DEBUG, INFO, WARNING, ERROR
+  save_raw_html: false    # 是否保存原始HTML（调试用）
+
+# 通知配置
+notification:
+  enabled: true
+  methods:
+    - file  # 保存到文件
+    # - email  # 邮件通知（未实现）
+    # - webhook  # Webhook通知（未实现）
+
+# 数据库关键词（用于筛选相关司法解释）
+keywords:
+  include:
+    - "司法解释"
+    - "解释"
+    - "规定"
+    - "批复"
+    - "答复"
+
+  exclude:
+    - "通知"
+    - "通报"
+    - "意见"  # 除非包含"司法解释"
+
+# 模块命名规则
+naming:
+  pattern: "{area}-{type}-{year}"
+  areas:
+    contract: "合同"
+    security: "担保|保证"
+    corporate: "公司"
+    tort: "侵权"
+    civil: "民事"
+    litigation: "诉讼"
+    labor: "劳动"
+    ip: "知识产权"
+
+  types:
+    general: "通则"
+    law: "制度|法律"
+    procedure: "程序"
+    evidence: "证据"
+
+# Gety MCP 配置
+gety:
+  enabled: true
+  max_results: 5
+  connectors:
+    - "Folder: 法律文档"
+    - "Folder: 司法解释"
+    - "Folder: 裁判文书"
+
+# Unifuncs 配置
+unifuncs:
+  enabled: true
+  max_results: 5
+  freshness: "Month"  # Day, Week, Month, Year
+  format: "markdown"  # markdown, text, json
+
+# 集成配置
+integration:
+  auto_generate: false  # 是否自动生成模块（需要人工审核）
+  sync_to_router: true  # 是否自动更新 router.md
+  create_git_commit: false  # 是否自动创建Git提交
+
+# 开发模式配置
+development:
+  debug: false
+  dry_run: false  # 如果为true，不实际修改文件
+  test_mode: false  # 如果为true，使用测试数据

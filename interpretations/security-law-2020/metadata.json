@@ -1,0 +1,99 @@
+{
+  "id": "security-law-2020",
+  "name": "民法典担保制度解释（2020）",
+  "official_name": "最高人民法院关于适用〈中华人民共和国民法典〉有关担保制度的解释",
+  "document_number": "法释〔2020〕28号",
+  "effective_date": "2021-01-01",
+  "article_count": 71,
+  "version": "1.0.0",
+  "last_updated": "2026-01-16",
+  "author": "陈石律师（浙江海泰律师事务所）",
+  "source": "《最高人民法院关于适用〈中华人民共和国民法典〉有关担保制度的解释》（法释〔2020〕28号）",
+  "keywords": [
+    "担保",
+    "担保合同",
+    "保证方式",
+    "一般保证",
+    "连带责任保证",
+    "先诉抗辩权",
+    "公司对外担保",
+    "相对人善意",
+    "审查决议",
+    "抵押财产转让",
+    "价款优先权",
+    "PMSI",
+    "保证期间",
+    "债务加入",
+    "流动抵押",
+    "独立担保",
+    "独立保函",
+    "房地一并抵押",
+    "预告登记",
+    "金钱质押"
+  ],
+  "dependencies": [
+    "core/philosophy.md",
+    "core/foundations-universal.md",
+    "domains/civil-law.md"
+  ],
+  "token_estimate": {
+    "readme": 1000,
+    "index": 500,
+    "articles_avg": 300
+  },
+  "priority_articles": [
+    2, 6, 7, 8, 12, 25, 28, 32, 37, 46, 54, 57
+  ],
+  "changes": [
+    {
+      "article": 7,
+      "theme": "相对人善意的判断标准",
+      "old_rule": "不知道或应当知道越权",
+      "new_rule": "是否审查决议",
+      "importance": "⭐⭐⭐⭐⭐"
+    },
+    {
+      "article": 25,
+      "theme": "保证方式的认定",
+      "old_rule": "约定不明 → 连带责任保证",
+      "new_rule": "约定不明 → 一般保证",
+      "importance": "⭐⭐⭐⭐⭐"
+    },
+    {
+      "article": 37,
+      "theme": "抵押财产转让的效力",
+      "old_rule": "需抵押权人同意",
+      "new_rule": "无需同意，抵押权具有追及效力",
+      "importance": "⭐⭐⭐⭐⭐"
+    },
+    {
+      "article": 57,
+      "theme": "价款优先权（PMSI）",
+      "old_rule": "无此制度",
+      "new_rule": "2020年新设制度，优先于浮动抵押",
+      "importance": "⭐⭐⭐⭐⭐"
+    },
+    {
+      "article": 2,
+      "theme": "担保合同的从属性",
+      "old_rule": "承认独立担保效力",
+      "new_rule": "原则无效，金融机构例外",
+      "importance": "⭐⭐⭐⭐⭐"
+    }
+  ],
+  "external_links": {
+    "official": {
+      "国家法律法规数据库": "https://flk.npc.gov.cn/detail.html?ZmY4MDgxODE4ZjEzNWY0NDAxODYyYWIwMjA2MTdkNjg",
+      "最高人民法院官网": "https://www.court.gov.cn/fabu-xiangqing-253921.html"
+    },
+    "professional": {
+      "威科先行": "https://law.wkinfo.com.cn/",
+      "北大法宝": "https://www.pkulaw.com/",
+      "法信": "https://www.faxin.com/"
+    },
+    "academic": {
+      "国家哲学社会科学学术期刊数据库": "https://www.nssd.cn/",
+      "中国法院网法律文库": "https://www.chinacourt.org/law.shtml"
+    }
+  }
+}

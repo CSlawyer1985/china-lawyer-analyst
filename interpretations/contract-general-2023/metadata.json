@@ -1,0 +1,102 @@
+{
+  "id": "contract-general-2023",
+  "name": "民法典合同编通则司法解释（2023）",
+  "official_name": "最高人民法院关于适用〈中华人民共和国民法典〉合同编通则若干问题的解释",
+  "document_number": "法释〔2023〕13号",
+  "effective_date": "2023-12-05",
+  "article_count": 69,
+  "version": "3.0.0",
+  "last_updated": "2026-01-16",
+  "author": "陈石律师（浙江海泰律师事务所）",
+  "source": "最高人民法院",
+  "keywords": [
+    "预约合同",
+    "认购书",
+    "订购书",
+    "意向书",
+    "违反强制性规定",
+    "公序良俗",
+    "越权代表",
+    "职务代理",
+    "无权处分",
+    "以物抵债",
+    "代位权",
+    "撤销权",
+    "情势变更",
+    "违约金调整",
+    "定金罚则"
+  ],
+  "dependencies": [
+    "core/philosophy.md",
+    "core/foundations-universal.md",
+    "domains/contract-law.md"
+  ],
+  "token_estimate": {
+    "readme": 1000,
+    "index": 500,
+    "articles_avg": 300
+  },
+  "priority_articles": [
+    6,
+    7,
+    8,
+    12,
+    16,
+    17,
+    19,
+    20,
+    27,
+    28,
+    60,
+    65,
+    67,
+    68
+  ],
+  "external_links": {
+    "official": "https://www.court.gov.cn/fabu-xiangqing-2023-12/13.html",
+    "npc_database": "https://flk.npc.gov.cn/detail2.html?ZmY4MDgwODE3ZjNkYjY5YzAxNmY0YzE4Zjk2ZjA4OWM",
+    "wkinfo": "https://law.wkinfo.com.cn/",
+    "pkulaw": "https://www.pkulaw.com/",
+    "faxin": "https://www.faxin.com/",
+    "wenshu": "https://wenshu.court.gov.cn/",
+    "anli": "https://anli.court.gov.cn/"
+  },
+  "related_interpretations": [],
+  "changes": [
+    {
+      "article": 16,
+      "theme": "违反强制性规定不导致合同无效的5种情形",
+      "old_rule": "违反强制性规定一律导致合同无效",
+      "new_rule": "区分情形，5种情形下合同有效",
+      "importance": "⭐⭐⭐⭐⭐"
+    },
+    {
+      "article": 6,
+      "theme": "预约合同的认定标准",
+      "old_rule": "预约与本约区分不明确",
+      "new_rule": "明确预约合同的成立要件和与本约的区分标准",
+      "importance": "⭐⭐⭐⭐⭐"
+    },
+    {
+      "article": 19,
+      "theme": "无权处分的合同效力",
+      "old_rule": "合同法第51条无权处分合同无效",
+      "new_rule": "合同有效，但不能履行的解除合同并赔偿",
+      "importance": "⭐⭐⭐⭐⭐"
+    },
+    {
+      "article": 20,
+      "theme": "越权代表的合理审查义务",
+      "old_rule": "不知道或应当知道越权",
+      "new_rule": "相对人应尽合理审查义务（审查决议）",
+      "importance": "⭐⭐⭐⭐⭐"
+    },
+    {
+      "article": 65,
+      "theme": "违约金调整标准",
+      "old_rule": "参照相关司法解释",
+      "new_rule": "超过损失30%一般认定为过分高于",
+      "importance": "⭐⭐⭐⭐⭐"
+    }
+  ]
+}

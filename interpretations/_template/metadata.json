@@ -1,0 +1,55 @@
+{
+  "id": "{interpretation-id}",
+  "name": "{司法解释名称}",
+  "official_name": "{司法解释正式名称}",
+  "document_number": "{文号}",
+  "effective_date": "YYYY-MM-DD",
+  "article_count": XX,
+  "version": "1.0.0",
+  "last_updated": "YYYY-MM-DD",
+  "author": "陈石律师（浙江海泰律师事务所）",
+  "source": "{发布机关}",
+  "keywords": [
+    "{关键词1}",
+    "{关键词2}",
+    "{关键词3}",
+    "{关键词4}",
+    "{关键词5}"
+  ],
+  "dependencies": [
+    "core/philosophy.md",
+    "core/foundations-universal.md",
+    "domains/{相关领域}.md"
+  ],
+  "token_estimate": {
+    "readme": 1000,
+    "index": 500,
+    "articles_avg": 300
+  },
+  "priority_articles": [
+    {X},
+    {Y},
+    {Z}
+  ],
+  "external_links": {
+    "official": "https://www.court.gov.cn/fabu-xiangqing-{id}.html",
+    "npc_database": "https://flk.npc.gov.cn/detail2.html?ZmY4MDgwODE3ZjNkYjY5YzAxNmY0YzE4Zjk2ZjA4OWM",
+    "wkinfo": "https://law.wkinfo.com.cn/",
+    "pkulaw": "https://www.pkulaw.com/",
+    "faxin": "https://www.faxin.com/",
+    "wenshu": "https://wenshu.court.gov.cn/",
+    "anli": "https://anli.court.gov.cn/"
+  },
+  "related_interpretations": [
+    "{相关司法解释id}"
+  ],
+  "changes": [
+    {
+      "article": {X},
+      "theme": "{变化主题}",
+      "old_rule": "{旧规则}",
+      "new_rule": "{新规则}",
+      "importance": "⭐⭐⭐⭐⭐"
+    }
+  ]
+}

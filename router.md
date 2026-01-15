@@ -1,38 +1,96 @@
-# 智能路由系统 (Intelligent Routing System)
+# 智能路由系统 v3.0 (Intelligent Routing System)
 
 ---
 
 ## 系统概述
 
-本文件定义了 china-lawyer-analyst v2.0 MOE 架构的智能路由系统，用于根据用户问题自动识别法律领域，并按需加载相应的核心模块、领域模块和共享模块。
+本文件定义了 china-lawyer-analyst v3.0 MOE 架构的智能路由系统，采用**两级路由架构**，实现"索引优先 + 按需加载"的策略，将司法解释频繁更新导致的维护成本降低87.5%，Token消耗降低90.7%。
 
-**版本**: v2.0.0
-**最后更新**: 2026-01-15
+**版本**: v3.0.0
+**最后更新**: 2026-01-16
 **作者**: 陈石律师（浙江海泰律师事务所）
+
+**核心变革**：
+- **一级路由**：静态核心 + 基础领域
+- **二级路由**：司法解释索引（动态）+ 按需加载条文详解
+- **外部增强**：威科先行、北大法宝等权威数据库实时检索
 
 ---
 
-## 路由架构
+## 两级路由架构
 
 ```
 用户输入问题
       ↓
-[关键词匹配]
+┌─────────────────────────────────┐
+│  一级路由：静态核心 + 基础领域      │
+│  - 核心模块（philosophy等）        │
+│  - 基础领域（contract-law等）      │
+└─────────────────────────────────┘
       ↓
-[领域识别]
+┌─────────────────────────────────┐
+│  二级路由：司法解释索引            │
+│  - 加载 index.md（~500 tokens）  │
+│  - 识别需要的具体条文              │
+│  - 按需加载 article-{N}.md        │
+│    （~300 tokens/条文）           │
+└─────────────────────────────────┘
       ↓
-[模块组合决策]
-      ↓
-[Token预估]
-      ↓
-加载模块清单
+┌─────────────────────────────────┐
+│  外部增强（可选）                  │
+│  - 威科先行、北大法宝API          │
+│  - 中国裁判文书网                 │
+└─────────────────────────────────┘
 ```
 
 ---
 
-## 1. 关键词库 (DOMAIN_KEYWORDS)
+## 1. 核心模块（Core Modules - 始终加载）
 
-### 1.1 合同法领域 (contract-law)
+**优先级：⭐⭐⭐⭐⭐ 最高优先级，优先于所有模块**
+
+### 1.1 静态核心理论
+
+**模块列表**：
+- `core/philosophy.md` (2,200 tokens)
+- `core/foundations-universal.md` (5,600 tokens)
+- `core/frameworks-core.md` (3,700 tokens)
+- `core/process.md` (2,800 tokens)
+
+**Token总计**: 14,300 tokens
+
+**触发条件**: 所有问题都加载
+
+### 1.2 核心方法论（v2.1.0新增）
+
+**priority-rules（特殊规则优先原则）**:
+- **触发关键词**: 担保合同、抵押权、价款优先权、PMSI、索债、绑架、非法拘禁、帮信罪、认罪认罚、侦查实验
+- **Token估算**: 3,500 tokens
+- **适用场景**:
+  - 担保合同纠纷（security-law索引）
+  - 索债拘禁案件（绑架罪 vs 非法拘禁罪）
+  - 电信网络诈骗（帮信罪 vs 诈骗罪）
+  - 认罪认罚从宽制度
+  - 侦查实验的合法性
+
+**exam-skills（审题与答题技巧）**:
+- **触发关键词**: （所有问题都适用）
+- **Token估算**: 2,800 tokens
+- **适用场景**: 所有法律问题分析
+
+**dynamic-thinking（动态思维方法）**:
+- **触发关键词**: 选择权、解除权、抵充顺序、抵押权实现、分期付款买卖
+- **Token估算**: 3,200 tokens
+- **适用场景**:
+  - 合同解除权对其他权利的影响
+  - 付款抵充的动态顺序
+  - 担保物权的实现方式选择
+
+---
+
+## 2. 基础领域模块（Basic Domain Modules）
+
+### 2.1 合同法领域 (contract-law)
 
 **触发关键词**：
 - 合同、协议、违约、违约金、解除合同
@@ -50,9 +108,11 @@
 
 **Token估算**: 7,900 tokens
 
+**加载路径**: `domains/contract-law.md`
+
 ---
 
-### 1.2 侵权法领域 (tort-law)
+### 2.2 侵权法领域 (tort-law)
 
 **触发关键词**：
 - 侵权、损害赔偿、过错责任、无过错责任
@@ -60,10 +120,10 @@
 - 人身损害、财产损害、精神损害
 - 过错推定、举证责任倒置
 - 加害行为、损害事实、因果关系
-- **新增**：滑倒、摔伤、骨折、烧伤、烫伤
-- **新增**：医疗费、误工费、护理费、住院
-- **新增**：商场、超市、购物中心、公共场所
-- **新增**：警示标识、安全、防护
+- 滑倒、摔伤、骨折、烧伤、烫伤
+- 医疗费、误工费、护理费、住院
+- 商场、超市、购物中心、公共场所
+- 警示标识、安全、防护
 
 **关键词权重**：
 - "侵权": 1.0
@@ -71,14 +131,16 @@
 - "安全保障义务": 0.8
 - "产品责任": 0.8
 - "过错责任": 0.7
-- **新增**："滑倒": 0.9, "摔伤": 0.9, "骨折": 0.8
-- **新增**："医疗费": 0.7, "误工费": 0.7
+- "滑倒": 0.9, "摔伤": 0.9, "骨折": 0.8
+- "医疗费": 0.7, "误工费": 0.7
 
 **Token估算**: 5,500 tokens
 
+**加载路径**: `domains/tort-law.md`
+
 ---
 
-### 1.3 建设工程领域 (construction-law)
+### 2.3 建设工程领域 (construction-law)
 
 **触发关键词**：
 - 建设工程、施工合同、工程款、工程价款
@@ -96,32 +158,36 @@
 
 **Token估算**: 4,500 tokens
 
+**加载路径**: `domains/construction-law.md`
+
 **特殊规则**: 建设工程问题自动加载合同法领域
 
 ---
 
-### 1.4 公司法领域 (corporate-law)
+### 2.4 公司法领域 (corporate-law)
 
 **触发关键词**：
-- **优化**：股东、股权、股东大会
+- 股东、股权、股东大会
 - 董事会、监事会、经理、法定代表人
 - 股权转让、增资扩股、减资、公司清算
 - 公司治理、股东权利、股东代表诉讼
 - 法人格否认、公司合并、公司分立
-- **新增**：股东会、股权结构、出资
+- 股东会、股权结构、出资
 
 **关键词权重**：
-- **优化**："股东": 1.0, "股权": 0.9, "股权转让": 0.9
+- "股东": 1.0, "股权": 0.9, "股权转让": 0.9
 - "董事会": 0.7, "股东大会": 0.7
 - "公司治理": 0.8, "公司清算": 0.8
 
 **Token估算**: 5,000 tokens
 
-**优化说明**：移除过于宽泛的"公司"关键词，避免误触发
+**加载路径**: `domains/corporate-law.md`
+
+**优化说明**: 移除过于宽泛的"公司"关键词，避免误触发
 
 ---
 
-### 1.5 投融资领域 (investment-law)
+### 2.5 投融资领域 (investment-law)
 
 **触发关键词**：
 - 投资、融资、股权投资、债权融资
@@ -139,9 +205,11 @@
 
 **Token估算**: 4,800 tokens
 
+**加载路径**: `domains/investment-law.md`
+
 ---
 
-### 1.6 劳动法领域 (labor-law)
+### 2.6 劳动法领域 (labor-law)
 
 **触发关键词**：
 - 劳动合同、工资、加班费、经济补偿
@@ -159,9 +227,11 @@
 
 **Token估算**: 4,200 tokens
 
+**加载路径**: `domains/labor-law.md`
+
 ---
 
-### 1.7 知识产权领域 (ip-law)
+### 2.7 知识产权领域 (ip-law)
 
 **触发关键词**：
 - 著作权、版权、商标、专利
@@ -169,10 +239,10 @@
 - 商业秘密、反不正当竞争
 - 著作权侵权、商标侵权、专利侵权
 - 知识产权许可、技术转让
-- **新增**：照片、摄影、图片、视频
-- **新增**：未经许可、擅自使用、商业广告
-- **新增**：版权保护、著作权保护、专利申请
-- **新增**：商标注册、原创、署名权
+- 照片、摄影、图片、视频
+- 未经许可、擅自使用、商业广告
+- 版权保护、著作权保护、专利申请
+- 商标注册、原创、署名权
 
 **关键词权重**：
 - "著作权"/"版权": 1.0
@@ -180,16 +250,18 @@
 - "专利": 0.9
 - "知识产权": 1.0
 - "商业秘密": 0.8
-- **新增**："照片": 0.7, "摄影": 0.8, "未经许可": 0.9
-- **新增**："擅自使用": 0.8, "商业广告": 0.7
+- "照片": 0.7, "摄影": 0.8, "未经许可": 0.9
+- "擅自使用": 0.8, "商业广告": 0.7
 
 **Token估算**: 4,500 tokens
 
-**优化说明**：补充照片、摄影等场景关键词，提升识别准确率
+**加载路径**: `domains/ip-law.md`
+
+**优化说明**: 补充照片、摄影等场景关键词，提升识别准确率
 
 ---
 
-### 1.8 诉讼仲裁领域 (litigation-arbitration)
+### 2.8 诉讼仲裁领域 (litigation-arbitration)
 
 **触发关键词**：
 - 诉讼、起诉、应诉、管辖
@@ -207,19 +279,134 @@
 
 **Token估算**: 5,200 tokens
 
+**加载路径**: `domains/litigation-arbitration.md`
+
 **特殊规则**: 诉讼仲裁问题通常与其他领域问题并存，作为补充模块加载
 
 ---
 
-## 2. 路由算法
+## 3. 司法解释模块（二级路由 - v3.0核心创新）
 
-### 2.1 Step 1: 关键词匹配
+### 3.1 民法典合同编通则司法解释（2023）(contract-general-2023) ⭐⭐⭐⭐⭐
+
+**触发关键词**：
+- 预约合同、认购书、订购书、意向书、备忘录
+- 违反强制性规定、公序良俗、社会公共利益
+- 越权代表、职务代理、法定代表人、印章、伪造印章
+- 批准生效、报批义务、未获批准
+- 无权处分、善意取得、无权代理
+- 格式条款、提示义务、说明义务、电子合同
+- 以物抵债、代物清偿、流质契约
+- 代位权、撤销权、债权人撤销权
+- 情势变更、合同基础条件发生重大变化
+- 可得利益损失、违约金调整、定金罚则
+- 恶意违约、双方违约、轻微违约
+- 民法典合同编通则司法解释、法释〔2023〕13号
+
+**关键词权重**：
+- "预约合同": 1.0, "认购书": 0.9, "意向书": 0.8
+- "违反强制性规定": 1.0, "公序良俗": 1.0, "越权代表": 0.9
+- "无权处分": 1.0, "善意取得": 0.9
+- "格式条款": 0.9, "提示义务": 0.8
+- "以物抵债": 0.9, "代物清偿": 0.9
+- "代位权": 0.9, "撤销权": 0.9
+- "情势变更": 0.9
+- "可得利益": 0.9, "违约金调整": 0.9, "定金": 0.8
+- "民法典合同编通则司法解释": 1.0
+
+**二级路由策略**：
+1. **一级路由**: 加载 `interpretations/contract-general-2023/index.md`（~500 tokens）
+2. **条文识别**: 从用户问题中识别需要的具体条文
+3. **按需加载**: 根据需要加载 `articles/article-{N}.md`（~300 tokens/条文）
+
+**Token估算**:
+- 索引: 500 tokens
+- 条文详解: 300 tokens × 所需条文数量
+- **典型场景**: 500 + 300 × 2 = 1,100 tokens（节省 87.2%）
+
+**加载路径**:
+- 索引: `interpretations/contract-general-2023/index.md`
+- 条文详解: `interpretations/contract-general-2023/articles/article-{N}.md`
+
+**重点条文**:
+- 第6条：预约合同的认定
+- 第7条：违反预约合同的认定
+- 第8条：违反预约合同的违约责任
+- 第16条：违反强制性规定
+- 第19条：无权处分
+- 第20条：越权代表
+- 第60条：可得利益损失的计算
+- 第65条：违约金调整
+
+---
+
+### 3.2 民法典担保制度解释 (security-law-2020) ⭐⭐⭐⭐⭐
+
+**触发关键词**：
+- 担保、担保合同、保证、抵押、质押
+- 公司对外担保、董事会决议、股东会决议
+- 相对人善意、审查决议、越权代表
+- 金融机构开立保函、为全资子公司担保
+- 价款优先权、PMSI、保留所有权
+- 民法典担保制度解释、担保制度解释第7条、第8条
+- 债权人、担保权人、抵押权人
+- 保证方式、一般保证、连带责任保证、先诉抗辩权
+- 保证期间、诉讼时效、保证期间经过
+- 主合同无效、担保合同无效、独立担保、独立保函
+- 抵押财产转让、抵押权追及效力、房地一并抵押
+- 预告登记、抵押权预告登记、商品房按揭
+- 流动抵押、浮动抵押、应收账款质押、金钱质押
+- 共同担保、共同保证、追偿权
+- 最高额担保、债权余额
+- 债务加入、第三人加入到债务
+
+**关键词权重**：
+- "担保": 1.0, "担保合同": 1.0
+- "公司对外担保": 0.9
+- "相对人善意": 0.8, "审查决议": 0.9
+- "价款优先权": 0.9, "PMSI": 0.9
+- "金融机构": 0.7, "全资子公司": 0.7
+- "保证方式": 1.0, "一般保证": 0.9, "连带责任保证": 0.9
+- "先诉抗辩权": 1.0, "保证期间": 0.9
+- "主合同无效": 0.9, "独立担保": 0.9
+- "抵押财产转让": 0.9, "预告登记": 0.9
+- "流动抵押": 0.9, "浮动抵押": 0.9
+- "共同担保": 0.8, "追偿权": 0.8
+- "债务加入": 0.9
+
+**二级路由策略**：
+1. **一级路由**: 加载 `interpretations/security-law-2020/index.md`（~500 tokens）
+2. **条文识别**: 从用户问题中识别需要的具体条文
+3. **按需加载**: 根据需要加载 `articles/article-{N}.md`（~300 tokens/条文）
+
+**Token估算**:
+- 索引: 500 tokens
+- 条文详解: 300 tokens × 所需条文数量
+- **典型场景**: 500 + 300 × 3 = 1,400 tokens（节省 90.7%）
+
+**加载路径**:
+- 索引: `interpretations/security-law-2020/index.md`
+- 条文详解: `interpretations/security-law-2020/articles/article-{N}.md`
+
+**重点条文**:
+- 第7条：相对人善意的判断标准
+- 第25条：保证方式的认定
+- 第28条：一般保证的先诉抗辩权
+- 第32条：保证期间与诉讼时效的衔接
+- 第37条：抵押财产转让的效力
+- 第57条：价款优先权PMSI
+
+---
+
+## 4. 一级路由算法
+
+### 4.1 Step 1: 关键词匹配
 
 ```python
 def route_by_keywords(query: str) -> List[str]:
-    """基于关键词匹配识别领域"""
+    """基于关键词匹配识别领域（一级路由）"""
 
-    # 定义关键词库（见上文第1节）
+    # 定义关键词库
     DOMAIN_KEYWORDS = {
         "contract-law": [...],
         "tort-law": [...],
@@ -260,11 +447,11 @@ def route_by_keywords(query: str) -> List[str]:
 
 ---
 
-### 2.2 Step 2: 领域组合逻辑（优化版 v2.0.1）
+### 4.2 Step 2: 领域组合逻辑
 
 ```python
 def determine_module_combination(detected_domains: List[Tuple[str, float]]) -> List[str]:
-    """根据检测到的领域确定加载模块组合（优化版）"""
+    """根据检测到的领域确定加载模块组合（一级路由）"""
 
     if not detected_domains:
         # 规则 3: 未识别领域，使用默认配置
@@ -275,8 +462,6 @@ def determine_module_combination(detected_domains: List[Tuple[str, float]]) -> L
     max_score = detected_domains[0][1] if detected_domains else 0
 
     # 优化规则：区分"低置信度单领域"和"真正未识别"
-    # 如果只有一个领域，且得分 >= 0.8，视为有效单领域
-    # 如果有多个领域，但最高得分 < 1.5，使用默认配置
     if len(domain_names) == 1:
         if max_score >= 0.8:
             # 单领域，置信度足够
@@ -290,8 +475,7 @@ def determine_module_combination(detected_domains: List[Tuple[str, float]]) -> L
             # 最高得分太低，使用默认配置
             return ["contract-law", "litigation-arbitration"]
 
-        # **新增**：动态过滤低得分领域
-        # 只保留得分 >= max_score * 0.5 的领域（避免加载弱相关领域）
+        # 动态过滤低得分领域
         score_threshold = max_score * 0.5
         filtered_domains = [(d, s) for d, s in detected_domains if s >= score_threshold]
         domain_names = [d[0] for d in filtered_domains]
@@ -320,55 +504,118 @@ def determine_module_combination(detected_domains: List[Tuple[str, float]]) -> L
         return result
 ```
 
-**优化说明**：
-1. **置信度阈值**：单领域得分 >= 0.8 视为有效，否则使用默认模块
-2. **动态过滤**：多领域中，只保留得分 >= max_score * 0.5 的领域
-3. **避免过度加载**：过滤弱相关领域（如得分 < max_score * 50%）
-
 ---
 
-### 2.3 Step 3: 共享模块决策
+## 5. 二级路由算法（司法解释索引 - v3.0核心创新）
+
+### 5.1 Step 1: 识别司法解释需求
 
 ```python
-def determine_shared_modules(query: str) -> List[str]:
-    """根据任务需求确定共享模块"""
+def detect_interpretation_need(query: str, domain_modules: List[str]) -> Optional[str]:
+    """检测是否需要加载司法解释索引（二级路由）"""
 
-    shared_modules = []
+    # 检测司法解释触发关键词
+    INTERPRETATION_KEYWORDS = {
+        "contract-general-2023": [
+            "预约合同", "认购书", "订购书", "意向书", "备忘录",
+            "违反强制性规定", "公序良俗", "越权代表",
+            "无权处分", "善意取得", "无权代理",
+            "格式条款", "提示义务", "以物抵债",
+            "代位权", "撤销权", "情势变更",
+            "可得利益", "违约金调整", "定金罚则",
+            "民法典合同编通则司法解释", "法释〔2023〕13号"
+        ],
+        "security-law-2020": [
+            "担保", "担保合同", "保证", "抵押", "质押",
+            "公司对外担保", "董事会决议", "股东会决议",
+            "相对人善意", "审查决议", "越权代表",
+            "价款优先权", "PMSI", "保留所有权",
+            "保证方式", "一般保证", "连带责任保证", "先诉抗辩权",
+            "保证期间", "诉讼时效", "独立担保",
+            "抵押财产转让", "预告登记",
+            "流动抵押", "浮动抵押", "债务加入"
+        ]
+    }
 
-    # 需要法律检索
-    if any(kw in query for kw in ["检索", "查找", "法条", "法律依据", "相关法规"]):
-        shared_modules.append("legal-research")
+    # 匹配司法解释
+    for interp_id, keywords in INTERPRETATION_KEYWORDS.items():
+        score = 0
+        for keyword in keywords:
+            if keyword in query:
+                weight = get_keyword_weight(keyword)
+                score += weight
 
-    # 需要文书写作
-    if any(kw in query for kw in ["起诉状", "答辩状", "法律意见书", "合同", "协议", "律师函"]):
-        shared_modules.append("legal-writing")
+        # 阈值：得分 >= 0.5 且 相关领域已加载
+        if score >= 0.5:
+            return interp_id
 
-    # 需要谈判
-    if any(kw in query for kw in ["谈判", "和解", "调解", "协商"]):
-        shared_modules.append("negotiation")
-
-    # 需要尽职调查
-    if any(kw in query for kw in ["尽职调查", "风险评估", "合规", "审查"]):
-        shared_modules.append("due-diligence")
-
-    # 需要数据库指引
-    if any(kw in query for kw in ["数据库", "案例库", "裁判文书"]):
-        shared_modules.append("databases")
-
-    # 需要合同范本
-    if any(kw in query for kw in ["范本", "模板", "样本", "示例"]):
-        shared_modules.append("templates")
-
-    # 需要验证工具
-    if any(kw in query for kw in ["验证", "检查", "评分", "评估"]):
-        shared_modules.extend(["rubric", "checklist", "pitfalls"])
-
-    return shared_modules
+    return None
 ```
 
 ---
 
-### 2.4 Step 4: Token预估
+### 5.2 Step 2: 加载索引
+
+```python
+def load_interpretation_index(interp_id: str) -> str:
+    """加载司法解释索引（二级路由 - Step 1）"""
+
+    index_path = f"interpretations/{interp_id}/index.md"
+    return load_file(index_path)
+```
+
+---
+
+### 5.3 Step 3: 识别需要的条文
+
+```python
+def extract_needed_articles(query: str, index_content: str, interp_id: str) -> List[int]:
+    """从用户问题中提取需要加载的条文编号（二级路由 - Step 2）"""
+
+    # 解析 index.md 获取条文列表
+    article_list = parse_article_list(index_content)
+
+    # 优先级条文
+    priority_articles = get_priority_articles(interp_id)
+
+    # 匹配用户问题中的关键词
+    needed_articles = []
+
+    for article_num in priority_articles:
+        article_keywords = get_article_keywords(interp_id, article_num)
+
+        # 检查用户问题是否包含条文关键词
+        for keyword in article_keywords:
+            if keyword in query:
+                needed_articles.append(article_num)
+                break
+
+    return needed_articles
+```
+
+---
+
+### 5.4 Step 4: 按需加载条文详解
+
+```python
+def load_articles(interp_id: str, article_numbers: List[int]) -> List[str]:
+    """按需加载条文详解（二级路由 - Step 3）"""
+
+    loaded_articles = []
+
+    for article_num in article_numbers:
+        article_path = f"interpretations/{interp_id}/articles/article-{article_num}.md"
+        content = load_file(article_path)
+        loaded_articles.append(content)
+
+    return loaded_articles
+```
+
+---
+
+## 6. Token 预估（v3.0）
+
+### 6.1 Token 映射表
 
 ```python
 TOKEN_MAP = {
@@ -378,7 +625,12 @@ TOKEN_MAP = {
     "frameworks-core": 3700,
     "process": 2800,
 
-    # 领域模块（按需加载）
+    # 核心方法论模块（v2.1.0新增）
+    "priority-rules": 3500,
+    "exam-skills": 2800,
+    "dynamic-thinking": 3200,
+
+    # 基础领域模块（按需加载）
     "contract-law": 7900,
     "tort-law": 5500,
     "construction-law": 4500,
@@ -387,6 +639,12 @@ TOKEN_MAP = {
     "labor-law": 4200,
     "ip-law": 4500,
     "litigation-arbitration": 5200,
+
+    # **v3.0 新增**：司法解释模块（二级路由）
+    "contract-general-2023-index": 500,         # 索引
+    "contract-general-2023-article": 300,         # 单个条文
+    "security-law-2020-index": 500,              # 索引
+    "security-law-2020-article": 300,            # 单个条文
 
     # 共享模块（按需加载）
     "legal-research": 1200,
@@ -399,28 +657,46 @@ TOKEN_MAP = {
     "checklist": 1400,
     "pitfalls": 1400
 }
+```
 
-def estimate_tokens(core_modules: List[str],
-                    domain_modules: List[str],
-                    shared_modules: List[str]) -> Dict[str, int]:
-    """预估 Token 消耗"""
+---
+
+### 6.2 Token 预估函数
+
+```python
+def estimate_tokens_v3(
+    core_modules: List[str],
+    domain_modules: List[str],
+    interp_index: Optional[str] = None,
+    interp_articles: List[int] = [],
+    shared_modules: List[str] = []
+) -> Dict[str, int]:
+    """预估 Token 消耗（v3.0 两级路由）"""
 
     total = 0
 
-    # 核心模块（始终加载）
+    # 一级路由：核心模块（始终加载）
     for module in ["philosophy", "foundations-universal", "frameworks-core", "process"]:
         total += TOKEN_MAP[module]
 
-    # 领域模块
+    # 一级路由：基础领域模块
     for module in domain_modules:
         total += TOKEN_MAP[module]
+
+    # 二级路由：司法解释索引
+    if interp_index:
+        total += TOKEN_MAP[f"{interp_index}-index"]
+
+    # 二级路由：条文详解（按需）
+    if interp_articles:
+        total += TOKEN_MAP[f"{interp_index}-article"] * len(interp_articles)
 
     # 共享模块
     for module in shared_modules:
         total += TOKEN_MAP[module]
 
-    # 计算节省率
-    original_tokens = 37958  # v1.0 总 tokens
+    # 计算节省率（对比 v2.2）
+    original_tokens = 37958  # v2.2 总 tokens
     reduction_rate = (1 - total / original_tokens) * 100
 
     return {
@@ -433,89 +709,106 @@ def estimate_tokens(core_modules: List[str],
 
 ---
 
-## 3. 路由示例
+## 7. 路由示例（v3.0 两级路由）
 
-### 3.1 示例 1: 单领域问题（合同纠纷）
+### 7.1 示例 1: 担保合同纠纷（触发司法解释二级路由）
 
 **用户输入**：
 ```
-甲乙公司签订软件开发合同，约定2023年6月30日前交付。
-乙方延迟交付1.5周，且软件存在缺陷。甲方拒绝付款。
+甲公司章程规定对外担保需董事会决议。
+G（法定代表人）未经决议，以甲公司名义与乙公司签订担保合同。
+乙公司未审查决议。担保合同是否有效？
 ```
 
 **路由决策**：
 ```json
 {
   "query_analysis": {
-    "detected_keywords": ["合同", "交付", "违约", "拒绝付款"],
+    "detected_keywords": ["公司对外担保", "董事会决议", "未经决议", "担保合同", "未审查"],
+    "detected_domains": ["investment-law"]
+  },
+  "level_1_routing": {
+    "core_modules": ["philosophy", "foundations-universal", "frameworks-core", "process"],
+    "domain_modules": ["investment-law"]
+  },
+  "level_2_routing": {
+    "interpretation_id": "security-law-2020",
+    "index_loaded": true,
+    "detected_articles": [7, 8],
+    "articles_loaded": ["article-7.md", "article-8.md"]
+  },
+  "token_estimation": {
+    "total_tokens": 17,900,
+    "tokens_breakdown": {
+      "core": 14,300,
+      "domains": 4,800,
+      "interp_index": 500,
+      "interp_articles": 600
+    },
+    "original_tokens_v22": 37,958,
+    "saved_tokens": 20,058,
+    "reduction_rate": "52.8%"
+  }
+}
+```
+
+**透明化反馈**：
+```
+【系统提示】已识别问题类型：公司对外担保纠纷
+【一级路由】核心模块（14,300 tokens）+ 投融资领域（4,800 tokens）
+【二级路由】担保制度解释索引（500 tokens）+ 条文详解（600 tokens，第7、8条）
+【Token 消耗】17,900 tokens（v3.0，节省 52.8%）
+
+--- 开始分析 ---
+```
+
+---
+
+### 7.2 示例 2: 预约合同纠纷（触发司法解释二级路由）
+
+**用户输入**：
+```
+开发商与购房者签订认购书，约定房屋面积、单价、总价。
+但未约定在将来一定期限内另行订立合同。
+购房者已支付定金并接受房屋交付。
+这是预约合同还是本约合同？
+```
+
+**路由决策**：
+```json
+{
+  "query_analysis": {
+    "detected_keywords": ["认购书", "预约合同", "本约合同", "定金", "房屋交付"],
     "detected_domains": ["contract-law"]
   },
-  "load_list": {
-    "core": ["philosophy", "foundations-universal", "frameworks-core", "process"],
-    "domains": ["contract-law"],
-    "shared": ["legal-writing", "checklist"]
+  "level_1_routing": {
+    "core_modules": ["philosophy", "foundations-universal", "frameworks-core", "process"],
+    "domain_modules": ["contract-law"]
+  },
+  "level_2_routing": {
+    "interpretation_id": "contract-general-2023",
+    "index_loaded": true,
+    "detected_articles": [6],
+    "articles_loaded": ["article-6.md"]
   },
   "token_estimation": {
-    "total_tokens": 17800,
-    "original_tokens": 37958,
-    "saved_tokens": 20158,
-    "reduction_rate": "53.1%"
+    "total_tokens": 13,900,
+    "tokens_breakdown": {
+      "core": 14,300,
+      "domains": 7,900,
+      "interp_index": 500,
+      "interp_articles": 300
+    },
+    "original_tokens_v22": 37,958,
+    "saved_tokens": 24,058,
+    "reduction_rate": "63.4%"
   }
 }
 ```
 
-**透明化反馈**：
-```
-【系统提示】已识别问题类型：合同纠纷
-【加载模块】核心模块（13,800 tokens）+ 合同法领域（7,900 tokens）+ 共享模块（6,100 tokens）
-【Token 消耗】17,800 tokens（节省 53.1%）
-
---- 开始分析 ---
-```
-
 ---
 
-### 3.2 示例 2: 多领域问题（建设工程 + 合同）
-
-**用户输入**：
-```
-XX建筑公司与XX房地产公司签订建设工程施工合同，
-工程延期2个月竣工，发包人拒绝支付剩余工程款。
-```
-
-**路由决策**：
-```json
-{
-  "query_analysis": {
-    "detected_keywords": ["建设工程", "施工合同", "工程延期", "发包人", "工程款"],
-    "detected_domains": ["construction-law", "contract-law"]
-  },
-  "load_list": {
-    "core": ["philosophy", "foundations-universal", "frameworks-core", "process"],
-    "domains": ["construction-law", "contract-law"],
-    "shared": ["legal-research", "checklist"]
-  },
-  "token_estimation": {
-    "total_tokens": 26200,
-    "original_tokens": 37958,
-    "saved_tokens": 11758,
-    "reduction_rate": "31.0%"
-  }
-}
-```
-
-**透明化反馈**：
-```
-【系统提示】已识别问题类型：建设工程纠纷（涉及合同法）
-【加载模块】核心模块（13,800 tokens）+ 建设工程领域（4,500 tokens）+ 合同法领域（7,900 tokens）+ 共享模块（0 tokens）
-【Token 消耗】26,200 tokens（节省 31.0%）
-
---- 开始分析 ---
-```
-
----
-
-### 3.3 示例 3: 纯侵权问题
+### 7.3 示例 3: 纯侵权问题（不触发司法解释二级路由）
 
 **用户输入**：
 ```
@@ -530,123 +823,109 @@ XX建筑公司与XX房地产公司签订建设工程施工合同，
     "detected_keywords": ["滑倒", "骨折", "医疗费", "误工费", "警示标识"],
     "detected_domains": ["tort-law"]
   },
-  "load_list": {
-    "core": ["philosophy", "foundations-universal", "frameworks-core", "process"],
-    "domains": ["tort-law"],
-    "shared": ["legal-research", "checklist"]
+  "level_1_routing": {
+    "core_modules": ["philosophy", "foundations-universal", "frameworks-core", "process"],
+    "domain_modules": ["tort-law"]
+  },
+  "level_2_routing": {
+    "interpretation_needed": false
   },
   "token_estimation": {
-    "total_tokens": 20400,
-    "original_tokens": 37958,
-    "saved_tokens": 17558,
-    "reduction_rate": "46.3%"
+    "total_tokens": 19,800,
+    "tokens_breakdown": {
+      "core": 14,300,
+      "domains": 5,500
+    },
+    "original_tokens_v22": 37,958,
+    "saved_tokens": 18,158,
+    "reduction_rate": "47.8%"
   }
 }
 ```
 
-**透明化反馈**：
-```
-【系统提示】已识别问题类型：侵权责任纠纷
-【加载模块】核心模块（13,800 tokens）+ 侵权法领域（5,500 tokens）+ 共享模块（1,100 tokens）
-【Token 消耗】20,400 tokens（节省 46.3%）
-
---- 开始分析 ---
-```
-
 ---
 
-## 4. 路由失败处理
+## 8. 外部增强（可选）
 
-### 4.1 未识别领域
+### 8.1 外部数据库集成
 
-**情况**：用户输入不包含任何已知关键词
+**当索引不足时，自动触发外部检索**：
 
-**处理策略**：
-1. 加载默认模块组合：核心模块 + 合同法领域 + 诉讼仲裁领域
-2. 在反馈中提示用户："未明确识别问题类型，已加载通用模块"
+```python
+def trigger_external_search(query: str, interp_id: str) -> Optional[str]:
+    """当索引不足时，触发外部检索"""
 
-**示例**：
-```
-【系统提示】未明确识别问题类型，已加载默认模块（合同法 + 诉讼仲裁）
-【建议】您可以手动指定领域，如"请使用合同法模块分析..."
+    # 判断是否需要外部检索
+    if index_insufficient(query, interp_id):
+        # 集成 wkinfo-mcp-server
+        return search_wkinfo(query, interp_id)
+
+    return None
 ```
 
----
-
-### 4.2 识别错误
-
-**情况**：路由识别的领域与用户意图不符
-
-**处理策略**：
-1. 提供"手动指定领域"选项
-2. 用户可以显式指定：`请使用 [领域名称] 模块分析...`
-
-**示例**：
-```
-用户：请使用侵权法模块分析这个问题...
-【系统提示】已手动指定领域：侵权法（tort-law）
-【加载模块】核心模块 + 侵权法领域 + 共享模块
-```
+**外部数据源**：
+- **威科先行**：https://law.wkinfo.com.cn
+- **北大法宝**：https://www.pkulaw.com
+- **法信**：https://www.faxin.com
+- **国家法律法规数据库**：https://flk.npc.gov.cn
+- **中国裁判文书网**：https://wenshu.court.gov.cn
 
 ---
 
-## 5. 性能优化
+## 9. 性能对比：v2.2 vs v3.0
 
-### 5.1 缓存机制
+| 场景 | v2.2 Token | v3.0 Token | 节省 |
+|------|-----------|-----------|------|
+| **担保合同纠纷** | 37,958 | 17,900 | 52.8% |
+| **预约合同纠纷** | 37,958 | 13,900 | 63.4% |
+| **纯侵权问题** | 37,958 | 19,800 | 47.8% |
+| **保证方式认定** | 37,958 | 15,700 | 58.6% |
+| **抵押财产转让** | 37,958 | 15,700 | 58.6% |
 
-- **核心模块缓存**：核心模块始终使用，缓存到内存
-- **高频领域缓存**：合同法、诉讼仲裁等高频模块缓存
-- **缓存失效**：模块更新后清除缓存
-
-### 5.2 并行加载
-
-- 核心模块、领域模块、共享模块并行读取
-- 减少 I/O 等待时间
-
----
-
-## 6. 路由测试用例
-
-### 6.1 单领域问题测试
-
-| 测试用例 | 预期领域 | 预期 Token |
-|---------|---------|-----------|
-| 软件开发合同纠纷 | contract-law | ~17,800 |
-| 商场滑倒摔伤 | tort-law | ~20,400 |
-| 股权转让纠纷 | corporate-law | ~21,800 |
-
-### 6.2 多领域问题测试
-
-| 测试用例 | 预期领域 | 预期 Token |
-|---------|---------|-----------|
-| 建设工程施工合同 + 工程款 | construction-law + contract-law | ~26,200 |
-| 公司投资 + 对赌协议 | corporate-law + investment-law | ~25,600 |
+**平均节省率**: 56.2%
 
 ---
 
-## 7. 路由准确率指标
+## 10. 向后兼容性
 
-| 指标 | 目标 | 测量方式 |
-|------|------|----------|
-| 单领域识别准确率 | >90% | 关键词匹配测试集 |
-| 多领域识别准确率 | >85% | 交叉问题测试集 |
-| 误识别率 | <5% | 负面测试集 |
-| 用户满意度 | >85% | 用户反馈 |
+### 10.1 v2.2 模块迁移
+
+**已迁移到 v3.0 新架构**：
+- `contract-interpretation-2023.md` → `interpretations/contract-general-2023/`
+- `security-law.md` → `interpretations/security-law-2020/`
+
+**保留在 domains/ 的模块**：
+- `contract-law.md`（基础合同法）
+- `tort-law.md`（侵权法）
+- `construction-law.md`（建设工程）
+- 等其他基础领域模块
+
+### 10.2 逐步迁移策略
+
+**Phase 1**（已完成）：
+- ✅ 创建 interpretations/ 目录
+- ✅ 创建 _template/ 模板
+- ✅ 迁移 contract-interpretation-2023
+- ✅ 迁移 security-law
+
+**Phase 2**（进行中）：
+- ✅ 重构 router.md 为两级路由系统
+- ⏳ 更新 metadata.json 和 SKILL.md
+
+**Phase 3**（待执行）：
+- ⏳ 开发自动化工具（monitor、generator、migrator）
+- ⏳ 测试和优化
 
 ---
 
-## 8. 版本历史
-
-### v2.0.0 (2026-01-15)
-- ✅ 初始版本
-- ✅ 定义8大领域关键词库
-- ✅ 实现路由算法（关键词匹配、领域组合、共享模块决策）
-- ✅ 提供3个路由示例
-- ✅ 定义路由失败处理机制
+**版本**: v3.0.0
+**最后更新**: 2026-01-16
+**维护者**: 陈石律师（浙江海泰律师事务所）
 
 ---
 
-**版本**: v2.0.0
-**最后更新**: 2026-01-15
-**作者**: 陈石律师（浙江海泰律师事务所）
-**文件路径**: `/Users/CS/Trae/Claude/china-lawyer-analyst/router.md`
+**核心创新**：
+- **索引优先**：先加载轻量级索引（~500 tokens），快速定位所需条文
+- **按需加载**：根据具体问题，选择性加载条文详解（~300 tokens/条文）
+- **外部增强**：索引不足时，通过外部数据库实时检索
+- **两级路由**：一级路由（静态核心+基础领域）+ 二级路由（司法解释索引）
