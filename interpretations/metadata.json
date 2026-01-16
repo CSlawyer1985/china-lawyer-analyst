@@ -1,6 +1,88 @@
 {
-  "version": "3.0.0",
+  "version": "3.1.0",
   "last_updated": "2026-01-16",
+  "laws": {
+    "中华人民共和国公司法": {
+      "name": "中华人民共和国公司法",
+      "versions": [
+        {
+          "year": "2013",
+          "type": "修正",
+          "implementation_date": "2014-03-01",
+          "status": "superseded"
+        },
+        {
+          "year": "2018",
+          "type": "修正",
+          "implementation_date": "2018-10-26",
+          "status": "superseded"
+        },
+        {
+          "year": "2023",
+          "type": "修订",
+          "implementation_date": "2024-07-01",
+          "status": "effective",
+          "transition_period": {
+            "start": "2024-07-01",
+            "end": "2027-06-30",
+            "rules": [
+            "有限责任公司出资期限:5年过渡期",
+            "股份有限公司发起人出资:3年过渡期",
+            "具体规定见新公司法第228条"
+            ]
+          }
+        }
+      ]
+    },
+    "中华人民共和国民法典": {
+      "name": "中华人民共和国民法典",
+      "versions": [
+        {
+          "year": "2020",
+          "type": "制定",
+          "implementation_date": "2021-01-01",
+          "status": "effective",
+          "transition_period": null
+        }
+      ]
+    },
+    "中华人民共和国民事诉讼法": {
+      "name": "中华人民共和国民事诉讼法",
+      "versions": [
+        {
+          "year": "2012",
+          "type": "修正",
+          "implementation_date": "2013-01-01",
+          "status": "superseded"
+        },
+        {
+          "year": "2021",
+          "type": "修正",
+          "implementation_date": "2022-01-01",
+          "status": "effective",
+          "transition_period": null
+        }
+      ]
+    },
+    "中华人民共和国劳动合同法": {
+      "name": "中华人民共和国劳动合同法",
+      "versions": [
+        {
+          "year": "2008",
+          "type": "制定",
+          "implementation_date": "2008-01-01",
+          "status": "superseded"
+        },
+        {
+          "year": "2013",
+          "type": "修正",
+          "implementation_date": "2013-07-01",
+          "status": "effective",
+          "transition_period": null
+        }
+      ]
+    }
+  },
   "interpretations": [
     {
       "id": "contract-general-2023",
