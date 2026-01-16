@@ -9,7 +9,7 @@
 
 ## 项目简介
 
-`china-lawyer-analyst` 是一个适用于中国大陆法律体系的专业法律分析 Claude Skill。该 skill 将美国普通法系的 `lawyer-analyst` 本土化改造，基于大陆法系（成文法）体系，运用中国法律方法论进行法律分析。
+`china-lawyer-analyst` 是一个适用于中国大陆法律体系的专业法律分析 Claude Skill。基于大陆法系（成文法）体系，运用中国法律方法论进行法律分析。
 
 ### v3.2.0 核心升级 ⭐
 
